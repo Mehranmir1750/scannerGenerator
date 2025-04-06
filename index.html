@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #7b2ff7, #f107a3);
+      text-align: center;
+      padding: 50px;
+      color: #333;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      display: inline-block;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      color: #7b2ff7;
+    }
+
+    select, input, button {
+      padding: 12px;
+      margin: 12px 0;
+      width: 90%;
+      font-size: 1em;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    select:focus, input:focus {
+      border-color: #f107a3;
+    }
+
+    button {
+      background: #7b2ff7;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #f107a3;
+    }
+
+    canvas {
+      margin-top: 20px;
+    }
+
+    #downloadBtn {
+      display: none;
+    }
+
+    #downloadBtn button {
+      background: #28a745;
+    }
+
+    #downloadBtn button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>QR Code Generator</h2>
+
+    <label for="mode">Choose QR Type:</label><br>
+    <select id="mode" onchange="updatePlaceholder()">
+      <option value="">-- Select Option --</option>
+      <option value="phone">Phone Number</option>
+      <option value="link">Link/Text</option>
+    </select><br>
+
+    <input type="text" id="inputText" placeholder="Please choose an option first" disabled /><br>
+
+    <button onclick="generateQRCode()">Generate QR Code</button><br>
+    <canvas id="qr-code"></canvas><br>
+
+    <a id="downloadBtn" download="qr-code.png">
+      <button>Download QR Code</button>
+    </a>
+  </div>
+
+  <script>
+    function updatePlaceholder() {
+      const mode = document.getElementById("mode").value;
+      const input = document.getElementById("inputText");
+
+      if (mode === "phone") {
+        input.placeholder = "Enter phone number (e.g., +91...)";
+        input.disabled = false;
+      } else if (mode === "link") {
+        input.placeholder = "Enter link or text";
+        input.disabled = false;
+      } else {
+        input.placeholder = "Please choose an option first";
+        input.disabled = true;
+      }
+    }
+
+    function generateQRCode() {
+      const mode = document.getElementById("mode").value;
+      const input = document.getElementById("inputText").value.trim();
+      const canvas = document.getElementById("qr-code");
+
+      if (!mode) {
+        alert("Please select a QR type first.");
+        return;
+      }
+
+      if (!input) {
+        alert("Please enter the required information.");
+        return;
+      }
+
+      let value = (mode === "phone") ? "tel:" + input : input;
+
+      const qr = new QRious({
+        element: canvas,
+        value: value,
+        size: 200
+      });
+
+      const downloadBtn = document.getElementById("downloadBtn");
+      const dataURL = canvas.toDataURL("image/png");
+      downloadBtn.href = dataURL;
+      downloadBtn.style.display = "inline-block";
+    }
+  </script>
+</body>
+</html>
