@@ -1,0 +1,2 @@
+# scannerGenerator
+Generate your scanner
